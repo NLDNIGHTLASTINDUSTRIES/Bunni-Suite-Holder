@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>bunni.lol</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body {
+      background: #0b0b0b;
+      color: white;
+      overflow: hidden;
+    }
+    canvas#stars {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+    }
+    .background-grid {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+    @keyframes gridMove {
+      from { transform: translateY(0); }
+      to { transform: translateY(-60px); }
+    }
+    .intro {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #111, #000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .intro-text {
+      position: absolute;
+      font-size: 4rem;
+      font-weight: bold;
+      opacity: 0;
+      white-space: nowrap;
+    }
+    .slide-in {
+      animation: slideIn 1s ease forwards;
+    }
+    .slide-out {
+      animation: slideOut 1s ease forwards;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100vw);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100vw);
+        opacity: 0;
+      }
+    }
+    .container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 1;
+      position: relative;
+    }
+    .container.visible {
+      opacity: 1;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 10px;
+    }
+    .brand-text {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+    }
+    .btn {
+      padding: 12px 25px;
+      border-radius: 6px;
+      background: rgba(31,31,31,0.8);
+      backdrop-filter: blur(6px);
+      color: white;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="background-grid"></div>
+  <div class="intro" id="intro">
+    <div class="intro-text" id="introBunni">bunni</div>
+    <div class="intro-text" id="introLol">.lol</div>
+  </div>
+  <div class="container" id="mainContent">
+    <img src="./bunni.fun_files/logo.png" alt="bunni" class="logo">
+    <div class="brand-text">bunni.lol</div>
+    <div class="buttons">
+      <a href="https://download948.mediafire.com/dd0qyfkb5i4g3eGSquJMBV4Tg41juiKYdlqD9NYDtk_VQyx0XEVpjxoYVTWVlNWV4bZw-t5Y0InmoWHH3fBO7teeuzfE2txl9E7OVPcwmSKWL6w6Lx_pOml2Xfe_KgDlgN9Mpf_Ne2VHMtBNrT-7pbT1UybHAJiA-pCZWh13kULQ/itmtp5xo71mfrde/Bunni+Installer.exe" target="_blank" class="btn">Download</a>
+      <a href="https://discord.gg/bunnifun" target="_blank" class="btn">Discord</a>
+      <a href="#" class="btn">Contact</a>
+    </div>
+  </div>
+  <script>
+    const intro = document.getElementById("intro");
+    const bunni = document.getElementById("introBunni");
+    const lol = document.getElementById("introLol");
+    const main = document.getElementById("mainContent");
+    setTimeout(() => bunni.classList.add("slide-in"), 200);
+    setTimeout(() => {
+      bunni.classList.remove("slide-in");
+      bunni.classList.add("slide-out");
+    }, 1600);
+    setTimeout(() => lol.classList.add("slide-in"), 2600);
+    setTimeout(() => {
+      lol.classList.remove("slide-in");
+      lol.classList.add("slide-out");
+    }, 4000);
+    setTimeout(() => {
+      intro.style.display = "none";
+      main.classList.add("visible");
+      document.body.style.overflow = "auto";
+    }, 5200);
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+    const stars = Array.from({ length: 150 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.5,
+      s: Math.random() * 0.6 + 0.2
+    }));
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const star of stars) {
+        star.y -= star.s;
+        if (star.y < 0) {
+          star.y = canvas.height;
+          star.x = Math.random() * canvas.width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+  </script>
+
+</body>
+</html>
